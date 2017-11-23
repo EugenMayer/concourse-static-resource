@@ -3,7 +3,7 @@
     "uri": "https://48pfvax78yjr.runscope.net"
   },
    "params": {
-      "source_filepath": "/tests/assets/testfile",
+      "source_filepath": "testfile",
       "dest_filename_pattern": "foo.tgz"
   }
 }

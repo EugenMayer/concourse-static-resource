@@ -57,7 +57,7 @@ func main() {
 		destFilename = destFilenamePattern
 	}
 
-	var sourceFile string = getSourceFile(request.Params.SourceFilepathGlob)
+	var sourceFile string = getSourceFile(request.Params.SourceFilepathGlob, sourceDir)
 
 	// placeholder for the curlPipe dest arg $1 and upload-destination $2
 	// the dest URL looks like <URI>/<destFilename>
@@ -105,8 +105,9 @@ func getVersionFromFile(versionFilepath string, sourceDir string) string {
 	return ""
 }
 
-func getSourceFile(sourceFileGlob string) string {
-	matches, err := filepath.Glob(sourceFileGlob)
+func getSourceFile(sourceFileGlob string, sourceDir string) string {
+	var realpath string = filepath.Join(sourceDir, sourceFileGlob)
+	matches, err := filepath.Glob(realpath)
 	fmt.Println(sourceFileGlob)
 
 	if err != nil {
