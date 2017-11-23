@@ -2,15 +2,17 @@
 
 _You can use this concourse-ci resource to download resources which you want to explicitly fetch using a specific version._
 
-Upfront, static means, that you consume one exact file, a specific version of something. It should not change and it not designed to do so.
-Same goes from upload, it should upload into the same bucket, but it should rather be used as initial upload, not as an "replace".
-E.g. you can upload to a Sonatype nexus raw repository.
+Upfront, static means, that you consume `in` one exact file, a specific version of something. It should not change and it not designed to do so.
+The `out` operation is ment to multipart upload something into an endpoint, where a usual resource integration does not make sense.
+E.g. you can upload to a Sonatype nexus raw repository, where versioning an upload is very hard to implement.
+In contrary when you want to deploy a jar into the very same nexus, you rather want to use the `maven-resource` instead.
 
 It's not like a usual/classic concourse-ci resource where you want to utilize `check` to pull in the most recent release of the packages
 named, but rather you want to pick on specific release.
-This can be seen as a simimlar dependency as using a `package.json` or a `pom.xml` where you pick a specific version you know you are compatible with.
+This can be seen as a similar dependency as using a `package.json` or a `pom.xml` where you pick a specific version you know you are compatible with.
 
 In addition, with `out`, you can upload a file into an endpoint which understands multipart upload.
+
 ## Deeper thoughts on why and what we use static downloads
 
 The reason to not use a `curl/wget` inside your task instead or build script  (instead of using this resource) is that you want the resource/package to be interchangeable in the pipeline**s** - that means, you want to
@@ -25,7 +27,7 @@ That said, we use this resource with a simple rule to apply, which ensures that 
 
 The reason behind that is, that to achieve b) we want to reference the result of this pipeline with `passed` or its latest `semver` in our `bloody-edge-pipeine` build.
 
-Lets make this a example case.
+Lets make create a example
 
 So we have a `stable-build-pipeline`
 
@@ -105,7 +107,7 @@ You can do the same with `get: from_scm` then do a intermidiate `task: build-gem
 
   ```
 
- **So the concept of resources is still ensured and it is quiet important to have something like static-downloads for specific builds**
+**So the concept of resources is still ensured and it is quiet important to have something like static-resources for specific builds**
 
 ## Source Configuration
 
@@ -136,7 +138,14 @@ Fetches a URL and if `extract` is true also unpacks it
 
 ### `out`: Not implemented.
 
-Currently this uses a multipart upload of your file. The filename should be yet part of the URL itself like `https://myendpoint/thisfile.tgz`, the upload is implemented using
+Accepts `params`:
+
+ - `source_filepath`: *required* the filepath to the source file from your resources
+ - `dest_filename_pattern`: *required* The filename to use for the upload. If you include the placeholder `<version` you have to provide a `version_filepath`
+   The content of the version file will replace `<version>` in your pattern
+ - `version_filepath`: *optional* A filepath to a file including the version. Needs to be provided if `dest_filename_pattern` includes a placeholder
+
+Currently this uses a multipart upload of your file using curl utilizing
 
 `curl --upload-file <filepath>`
 
