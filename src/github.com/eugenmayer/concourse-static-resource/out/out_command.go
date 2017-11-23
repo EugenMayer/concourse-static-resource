@@ -66,7 +66,7 @@ func main() {
 
 	curlPipe := exec.Command(
 		"sh",
-		"-exc",
+		"-ec",
 		command,
 		"sh", sourceFile, destBaseUrl.String(), destFilename,
 	)
