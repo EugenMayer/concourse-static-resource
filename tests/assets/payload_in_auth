@@ -1,0 +1,9 @@
+{
+  "source": {
+    "uri":  "http://httpbin.org/basic-auth/test/testpw",
+    "authentication": {
+        "user": "test",
+        "password": "testpw"
+      }
+  }
+}
