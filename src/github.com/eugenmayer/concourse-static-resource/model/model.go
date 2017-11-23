@@ -10,7 +10,9 @@ type OutRequest struct {
 }
 
 type OutParams struct {
-	Filepath string `json:"filepath"`
+	SourceFilepath string `json:"source_filepath"`
+	DestFilenamePattern string `json:"dest_filename_pattern"`
+	VersionFilepath string `json:"version_filepath"`
 }
 
 type Source struct {

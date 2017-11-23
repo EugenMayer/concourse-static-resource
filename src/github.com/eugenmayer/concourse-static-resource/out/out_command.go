@@ -27,16 +27,19 @@ func main() {
 
 	var curlOpts string = curlopts.Curlopt(request.Source)
 
+	var destFilenamePattern string = ""
+
+	var destFilename string = ""
+
 	// placeholder for the curlPipe dest arg $1 and upload-destination $2
-	var command string = "curl " + curlOpts + " --upload-file \"$1\" \"$2\""
+	var command string = "curl " + curlOpts + " --upload-file \"$1\" \"$2\"/\"$3\""
 
 	curlPipe := exec.Command(
 		"sh",
 		"-exc",
 		command,
-		"sh", request.Params.Filepath, destUrl.String(),
+		"sh", request.Params.SourceFilepath, destUrl.String(),destFilename,
 	)
-
 
 	curlPipe.Stdout = os.Stderr
 	curlPipe.Stderr = os.Stderr
