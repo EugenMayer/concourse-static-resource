@@ -13,7 +13,6 @@ import (
 	"github.com/eugenmayer/concourse-static-resource/log"
 	"github.com/eugenmayer/concourse-static-resource/model"
 	"errors"
-	"fmt"
 )
 
 func main() {
@@ -38,7 +37,8 @@ func main() {
 	// read the version if the path is actually provided
 	var version string = getVersionFromFile(request.Params.VersionFilepath, sourceDir)
 	if version != "" {
-		fmt.Println("Loaded version: " + version)
+		// seems to lead to errors when parsing stdout json
+		//fmt.Println("Loaded version: " + version)
 	}
 
 	var curlOpts string = curlopts.Curlopt(request.Source)
@@ -79,7 +79,7 @@ func main() {
 		log.Fatal("uploading file", err)
 	}
 	// no-op check
-	json.NewEncoder(os.Stdout).Encode([]interface{}{})
+	json.NewEncoder(os.Stdout).Encode(model.OutResponse{Version: version, Filename: destFilename})
 }
 
 func getVersionFromFile(versionFilepath string, sourceDir string) string {
@@ -96,7 +96,7 @@ func getVersionFromFile(versionFilepath string, sourceDir string) string {
 		scanner.Scan()
 		var version = scanner.Text()
 		if version == "" {
-			log.Fatal("reading version from version file", errors.New("Your version file seems to be empty"))
+			log.Fatal("reading version from version file", errors.New("your version file seems to be empty"))
 		}
 		// probably validate further
 		return version
@@ -108,7 +108,6 @@ func getVersionFromFile(versionFilepath string, sourceDir string) string {
 func getSourceFile(sourceFileGlob string, sourceDir string) string {
 	var realpath string = filepath.Join(sourceDir, sourceFileGlob)
 	matches, err := filepath.Glob(realpath)
-	fmt.Println(sourceFileGlob)
 
 	if err != nil {
 		log.Fatal("using source glob did not match a file", err)
@@ -117,8 +116,6 @@ func getSourceFile(sourceFileGlob string, sourceDir string) string {
 	if matches == nil {
 		log.Fatal("using source glob did not match a file", errors.New(""))
 	}
-	fmt.Println(matches[0])
-
 
 	return matches[0]
 }

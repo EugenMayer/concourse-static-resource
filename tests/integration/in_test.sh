@@ -13,3 +13,4 @@ else
 fi
 
 /opt/resource/in /tmp/subfolder < /tests/assets/payload_in_auth
+echo "payload with auth succeeded"
