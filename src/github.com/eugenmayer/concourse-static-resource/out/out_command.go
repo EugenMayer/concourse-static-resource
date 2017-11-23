@@ -24,25 +24,26 @@ func main() {
 	var sourceDir string = os.Args[1]
 
 	var request model.OutRequest
-	var destUrl *url.URL
+	var destBaseUrl *url.URL
 	var err = json.NewDecoder(os.Stdin).Decode(&request)
 	if err != nil {
 		log.Fatal("reading request", err)
 	}
 
-	destUrl, err = url.Parse(request.Source.URI)
-
+	destBaseUrl, err = url.Parse(request.Source.URI)
 	if err != nil {
 		log.Fatal("parsing uri", err)
 	}
-	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
-		// path/to/whatever does not exist
-	}
+
+	// read the version if the path is actually provided
 	var version string = getVersionFromFile(request.Params.VersionFilepath, sourceDir)
-	fmt.Println("version" + version)
+	if version != "" {
+		fmt.Println("Loaded version: " + version)
+	}
 
 	var curlOpts string = curlopts.Curlopt(request.Source)
 
+	// depending if destFilenamePattern has a placeholder, us version to replace it and set our destFilename
 	var destFilenamePattern string = request.Params.DestFilenamePattern
 	var destFilename string = ""
 
@@ -57,13 +58,15 @@ func main() {
 	}
 
 	// placeholder for the curlPipe dest arg $1 and upload-destination $2
-	var command string = "curl " + curlOpts + " --upload-file \"$1\" \"$2\"/\"$3\""
+	// the dest URL looks like <URI>/<destFilename>
+	var fullDestUrl string = destBaseUrl.String() + "/" + destFilename
+	var command string = "curl " + curlOpts + " --upload-file \"$1\" " + fullDestUrl
 
 	curlPipe := exec.Command(
 		"sh",
 		"-exc",
 		command,
-		"sh", request.Params.SourceFilepath, destUrl.String(),destFilename,
+		"sh", request.Params.SourceFilepath, destBaseUrl.String(),destFilename,
 	)
 
 	curlPipe.Stdout = os.Stderr
@@ -80,7 +83,6 @@ func main() {
 func getVersionFromFile(versionFilepath string, sourceDir string) string {
 	if versionFilepath != "" {
 		var realpath string = filepath.Join(sourceDir,versionFilepath)
-		fmt.Println(realpath)
 		file, err := os.Open(realpath)
 		if err != nil {
 			log.Fatal("could not find version file at:" + realpath, err)
