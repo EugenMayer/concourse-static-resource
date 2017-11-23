@@ -140,7 +140,7 @@ Fetches a URL and if `extract` is true also unpacks it
 
 Accepts `params`:
 
- - `source_filepath`: *required* the filepath to the source file from your resources
+ - `source_filepath`: **required** the filepath to the source file from your resources. You can use a glob here like input/artifact-*.gz
  - `dest_filename_pattern`: *required* The filename to use for the upload. If you include the placeholder `<version` you have to provide a `version_filepath`
    The content of the version file will replace `<version>` in your pattern
  - `version_filepath`: *optional* A filepath to a file including the version. Needs to be provided if `dest_filename_pattern` includes a placeholder

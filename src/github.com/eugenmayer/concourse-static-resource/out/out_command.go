@@ -52,10 +52,12 @@ func main() {
 	} else if version != "" && !strings.Contains(destFilenamePattern, "<version>") {
 		log.Fatal("Inject version", errors.New("You have provided a version but your pattern does miss the <version> placeholder"))
 	} else if version != "" && strings.Contains(destFilenamePattern, "<version>") {
-		destFilename = strings.Replace(destFilenamePattern, "<version>", version,-1)
+		destFilename = strings.Replace(destFilenamePattern, "<version>", version, -1)
 	} else {
 		destFilename = destFilenamePattern
 	}
+
+	var sourceFile string = getSourceFile(request.Params.SourceFilepathGlob)
 
 	// placeholder for the curlPipe dest arg $1 and upload-destination $2
 	// the dest URL looks like <URI>/<destFilename>
@@ -66,7 +68,7 @@ func main() {
 		"sh",
 		"-exc",
 		command,
-		"sh", request.Params.SourceFilepath, destBaseUrl.String(),destFilename,
+		"sh", sourceFile, destBaseUrl.String(), destFilename,
 	)
 
 	curlPipe.Stdout = os.Stderr
@@ -82,10 +84,10 @@ func main() {
 
 func getVersionFromFile(versionFilepath string, sourceDir string) string {
 	if versionFilepath != "" {
-		var realpath string = filepath.Join(sourceDir,versionFilepath)
+		var realpath string = filepath.Join(sourceDir, versionFilepath)
 		file, err := os.Open(realpath)
 		if err != nil {
-			log.Fatal("could not find version file at:" + realpath, err)
+			log.Fatal("could not find version file at:"+realpath, err)
 		}
 		defer file.Close()
 
@@ -101,4 +103,21 @@ func getVersionFromFile(versionFilepath string, sourceDir string) string {
 	}
 	// else
 	return ""
+}
+
+func getSourceFile(sourceFileGlob string) string {
+	matches, err := filepath.Glob(sourceFileGlob)
+	fmt.Println(sourceFileGlob)
+
+	if err != nil {
+		log.Fatal("using source glob did not match a file", err)
+	}
+
+	if matches == nil {
+		log.Fatal("using source glob did not match a file", errors.New(""))
+	}
+	fmt.Println(matches[0])
+
+
+	return matches[0]
 }
