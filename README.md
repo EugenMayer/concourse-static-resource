@@ -147,7 +147,7 @@ resources:
 ```
 ## Behavior
 
-### `check`: Not implemented.
+### `check`: Pseudo checks for a new version, always returning the static version you provided
 
 It will always return the value you have set in `version_static` as a new version to keep the `check` to `in` handover
 properly working.
@@ -158,7 +158,7 @@ Do never use this with `trigger: true`
 
 Fetches the URL and if `extract` is true also unpacks it
 
-### `out`: Not implemented.
+### `out`: Uploads your file with the (dynamic) version you give using curl multipart to any endpoint
 
 Accepts `params`:
 
