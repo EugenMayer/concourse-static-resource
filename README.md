@@ -1,4 +1,4 @@
-# Download / Upload a static 'fixed' Resource
+# Download a static 'fixed' Resource and upload any artefact (also dynamic version support)
 
 _You can use this concourse-ci resource to download resources which you want to explicitly fetch using a specific version._
 
