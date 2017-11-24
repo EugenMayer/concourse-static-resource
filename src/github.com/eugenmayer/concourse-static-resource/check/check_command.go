@@ -19,8 +19,5 @@ func main() {
 		log.Fatal("Accessing version_static from source", errors.New("please provide a source.version_static value for the version"))
 	}
 
-	json.NewEncoder(os.Stdout).Encode([]model.CheckResponse{{
-		Version:  model.Version{Ref: request.Source.VersionStatic},
-		MetaData: []model.MetaDataPair{},
-	}})
+	json.NewEncoder(os.Stdout).Encode( []model.Version{ model.Version{ Ref: request.Source.VersionStatic}} )
 }
