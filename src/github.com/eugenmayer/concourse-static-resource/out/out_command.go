@@ -11,6 +11,7 @@ import (
 	"errors"
 	"github.com/eugenmayer/concourse-static-resource/shared"
 	"fmt"
+	"path/filepath"
 )
 
 func main() {
@@ -65,10 +66,11 @@ func main() {
 	}
 	// no-op check
 	metavalue := []model.MetaDataPair{
-		//model.MetaDataPair{
-		//	Name: "filename",
-		//	Value: destFilename,
-		//},
+		model.MetaDataPair{
+			Name: "filename",
+			// we expect the filename to be tha last path snippet
+			Value: filepath.Base(URI.String()),
+		},
 	}
 	json.NewEncoder(os.Stdout).Encode(model.OutResponse{
 		Version: model.Version{version},
