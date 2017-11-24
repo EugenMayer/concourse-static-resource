@@ -35,13 +35,13 @@ So we have a `stable-build-pipeline`
 jobs:
   - name: build-stable
     # this get we want to be interchangeable with latest/from SCM resources
-    - get: static-download-our-gem
+    - get: static-our-gem
     - task: build-app-with-gem
       file: ....
       input_mapping:
         docker-sync: static-download-our-gem
 resources:
-  - name: static-download-our-gem
+  - name: static-our-gem
     type: static
     source:
       uri: https://rubygems.org/downloads/docker-sync-0.5.0.gem
@@ -175,19 +175,44 @@ It can for example be used to upload into a Sonatype nexus repository of type `r
 
 ## Examples
 
+This example illustrates how we download docker-sync-0.5.0.gem from an arbitrary source, build whatever app we want
+and then upload that app back to our nexus `raw` repository using our `out`
+
 ```yaml
 jobs:
   - name: build-stable
+    - get: some-semver-version
     - get: static-download-our-gem
     - task: build-app-with-gem
       file: ....
+      output_mapping:
+        artifact_gem: our-app
+
+    # this will upload the tgz provided by the build-app-with-gem to our nexus
+    # using the filename myapp-0.0.1.tgz if some-semver-version/number is 0.0.1
+    - put: upload-to-nexus
+      params:
+        source_filepath: our-app/app-*.tgz
+        version_filepath: some-semver-version/number
 
 # define the resource we want to consume      
 resources:
-  - name: static-download-our-gem
-    type: static-download
+  - name: upload-to-nexus
+    type: static
+    source:
+      uri: https://nexus.sonatype.com/repository/raw-artifacts/docker-sync/myapp-<version>.tgz
+      version_static: 0.5.0
+
+  - name: static-our-gem
+    type: static
     source:
       uri: https://rubygems.org/downloads/docker-sync-<version>.gem
+      version_static: 0.5.0
+
+  - name: static-no-version-url
+    type: static
+    source:
+      uri: https://rubygems.org/downloads/docker-sync.gem
       version_static: 0.5.0
 
 # we need this to register the custom resource_type
@@ -198,6 +223,7 @@ resource_types:
       repository:               eugenmayer/concourse-static-resource
       tag:                      latest
 ```
+
 ## Docker hub
 
 You find this image at https://hub.docker.com/r/eugenmayer/concourse-static-resource/
