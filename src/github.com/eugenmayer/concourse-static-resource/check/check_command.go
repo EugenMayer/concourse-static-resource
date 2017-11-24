@@ -5,15 +5,22 @@ import (
 	"os"
 
 	"github.com/eugenmayer/concourse-static-resource/model"
+	"github.com/eugenmayer/concourse-static-resource/log"
+	"errors"
 )
 
 func main() {
-	// no-op check
-	version := model.PseudoVersion{}
-	version.Name = "Pseudo Version"
-	version.VersionID = "123456"
+	var request model.CheckRequest
+	if err := json.NewDecoder(os.Stdin).Decode(&request); err != nil {
+		log.Fatal("reading request", err)
+	}
+
+	if request.Source.VersionStatic == "" {
+		log.Fatal("Accessing version_static from source", errors.New("please provide a source.version_static value for the version"))
+	}
+
 	json.NewEncoder(os.Stdout).Encode([]model.PseudoVersion{{
-		Name:      "Pseudo Version",
-		VersionID: "123456",
+		Name:      "Static Version",
+		VersionID: request.Source.VersionStatic,
 	}})
 }

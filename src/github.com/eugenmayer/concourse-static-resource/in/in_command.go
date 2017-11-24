@@ -7,9 +7,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/eugenmayer/concourse-static-resource/curlopts"
 	"github.com/eugenmayer/concourse-static-resource/log"
 	"github.com/eugenmayer/concourse-static-resource/model"
+	"path/filepath"
+	"github.com/eugenmayer/concourse-static-resource/shared"
 )
 
 func main() {
@@ -20,47 +21,48 @@ func main() {
 
 	destination := os.Args[1]
 
-	err := os.MkdirAll(destination, 0755)
-	if err != nil {
+	if err := os.MkdirAll(destination, 0755); err != nil {
 		log.Fatal("creating destination", err)
 	}
 
 	var request model.InRequest
-
-	err = json.NewDecoder(os.Stdin).Decode(&request)
-
-	if err != nil {
+	if err := json.NewDecoder(os.Stdin).Decode(&request); err != nil {
 		log.Fatal("reading request", err)
 	}
 
-	sourceURL, err := url.Parse(request.Source.URI)
+	// that is the version handed over from check, we do NOT use the Source.version_static argument here
+	// eventhough that would be the same when having a check to in handover
+	// though when having a out to in handover, it would be the version out had, maybe something else VersionFromFile
+	var version string = request.Version.Ref
 
+	var sourceUrl string = shared.InjectVersionIntoPath(request.Source.URI, version, "<version>")
+	URI, err := url.Parse(sourceUrl)
 	if err != nil {
 		log.Fatal("parsing uri", err)
 	}
 
-	var curlOpts string = curlopts.Curlopt(request.Source)
+	var curlOpts string = shared.Curlopt(request.Source)
 
 	// placeholder for the curlPipe source arg
-	curlOpts = curlOpts + " \"$1\""
+	curlOpts = curlOpts
 
 	var command string
 	if (request.Source.Extract == true) {
 		// $2 is the placeholder for the curlPipe destination arg
-		command = fmt.Sprintf("curl %s %s", curlOpts, "| tar --warning=no-unknown-keyword -C \"$2\" -zxf -")
+		command = fmt.Sprintf("curl %s '%s' | tar --warning=no-unknown-keyword -C '%s' -zxf -", curlOpts, URI.String(), destination)
 	} else {
 		// $2 is the placeholder for the curlPipe destination arg
-		command = fmt.Sprintf("cd \"$2\"; curl %s %s", curlOpts, "-O")
+		command = fmt.Sprintf("cd '%s'; curl %s '%s' -O",destination, curlOpts, URI.String())
 	}
 
 	curlPipe := exec.Command(
 		"sh",
 		"-ec",
 		command,
-		"sh", sourceURL.String(), destination,
+		"sh",
 	)
 
-	curlPipe.Stdout = os.Stderr
+	//curlPipe.Stdout = os.Stderr
 	curlPipe.Stderr = os.Stderr
 
 	err = curlPipe.Run()
@@ -69,5 +71,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	json.NewEncoder(os.Stdout).Encode(model.InResponse{})
+	metavalue := []model.MetaDataPair{
+		model.MetaDataPair{
+			Name: "filename",
+			// we expect the filename to be tha last path snippet
+			Value: filepath.Base(URI.String()),
+		},
+	}
+	json.NewEncoder(os.Stdout).Encode(model.InResponse{
+		Version: model.Version{version},
+		MetaData: metavalue,
+	})
 }

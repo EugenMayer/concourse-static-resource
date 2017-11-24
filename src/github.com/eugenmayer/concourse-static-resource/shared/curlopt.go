@@ -1,4 +1,4 @@
-package curlopts
+package shared
 
 import (
 	"github.com/eugenmayer/concourse-static-resource/model"
@@ -17,3 +17,5 @@ func Curlopt(source model.Source) string {
 	}
 	return curlOpts
 }
+
+

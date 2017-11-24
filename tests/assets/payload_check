@@ -1,0 +1,6 @@
+{
+  "source": {
+    "uri": "https://rubygems.org/downloads/docker-sync-<version>.gem",
+    "version_static": "0.5.0"
+  }
+}

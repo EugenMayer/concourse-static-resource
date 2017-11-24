@@ -45,6 +45,7 @@ resources:
     type: static
     source:
       uri: https://rubygems.org/downloads/docker-sync-0.5.0.gem
+      version_static: 0.5.0
 
 resource_types:
   - name:                       static
@@ -112,6 +113,8 @@ You can do the same with `get: from_scm` then do a intermidiate `task: build-gem
 ## Source Configuration
 
 * `uri`: *Required.* The location of the file to download - we download using a simple curl request
+* `version_static`: *Required.* The version of your downloaded artefact - we do not parse it from URL since its not always possible
+  it will be use to replace the placeholder `<version>` if it is provided
 * `authentication`: *Optional.* Your basic-auth data `authentication.user` and `authentication.password`
 * `extract`: *Optional.* if `true`, `gunzip| tar xf` will be used to extract the download
 * `skip_ssl_validation`: *Optional.* Skip SSL validation.
@@ -121,7 +124,23 @@ resources:
   - name: static-our-gem
     type: static
     source:
-      uri: https://rubygems.org/downloads/docker-sync-0.5.0.gem
+      uri: https://rubygems.org/downloads/docker-sync-<version>.gem
+      version_static: 0.5.0
+      authentication:
+        user: eugenmayer
+        password: verysecret
+```
+
+You can also use a static URL without a placeholder, e.g. if you have no version string in the URL anyway
+
+```yaml
+resources:
+  - name: static-our-gem
+    type: static
+    source:
+      uri: https://rubygems.org/downloads/docker-sync.gem
+      # you still have to set this to make sure we know, which version that is
+      version_static: 0.5.0
       authentication:
         user: eugenmayer
         password: verysecret
@@ -130,20 +149,21 @@ resources:
 
 ### `check`: Not implemented.
 
-Is not implemented but does work in pipelines using a pseudo version. **It does never use `trigger: true` on it!**
+It will always return the value you have set in `version_static` as a new version to keep the `check` to `in` handover
+properly working.
+
+Do never use this with `trigger: true`
 
 ### `in`: Download and extract the archive.
 
-Fetches a URL and if `extract` is true also unpacks it
+Fetches the URL and if `extract` is true also unpacks it
 
 ### `out`: Not implemented.
 
 Accepts `params`:
 
  - `source_filepath`: **required** the filepath to the source file from your resources. You can use a glob here like input/artifact-*.gz
- - `dest_filename_pattern`: *required* The filename to use for the upload. If you include the placeholder `<version` you have to provide a `version_filepath`
-   The content of the version file will replace `<version>` in your pattern
- - `version_filepath`: *optional* A filepath to a file including the version. Needs to be provided if `dest_filename_pattern` includes a placeholder
+ - `version_filepath`: *optional* A filepath to a file including the version. Needs to be provided if `URI` includes a placeholder (<version>
 
 Currently this uses a multipart upload of your file using curl utilizing
 
@@ -167,7 +187,8 @@ resources:
   - name: static-download-our-gem
     type: static-download
     source:
-      uri: https://rubygems.org/downloads/docker-sync-0.5.0.gem
+      uri: https://rubygems.org/downloads/docker-sync-<version>.gem
+      version_static: 0.5.0
 
 # we need this to register the custom resource_type
 resource_types:

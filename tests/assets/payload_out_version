@@ -1,10 +1,9 @@
 {
   "source": {
-    "uri": "https://48pfvax78yjr.runscope.net"
+    "uri": "https://48pfvax78yjr.runscope.net/foo-<version>.tgz"
   },
    "params": {
       "source_filepath": "testfile",
-      "dest_filename_pattern": "foo-<version>.tgz",
       "version_filepath": "myversion/number"
   }
 }
