@@ -64,7 +64,7 @@ func main() {
 	if err := curlPipe.Run(); err != nil {
 		log.Fatal("uploading file", err)
 	}
-	// no-op check
+
 	metavalue := []model.MetaDataPair{
 		model.MetaDataPair{
 			Name: "filename",
