@@ -4,8 +4,8 @@ type CheckRequest struct {
 	Source Source `json:"source"`
 }
 type CheckResponse struct {
-	Source  Source  `json:"source"`
 	Version Version `json:"version"`
+	MetaData []MetaDataPair `json:"metadata"`
 }
 
 type InRequest struct {
