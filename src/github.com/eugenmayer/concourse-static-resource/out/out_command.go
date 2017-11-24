@@ -24,7 +24,7 @@ func main() {
 
 	var request model.OutRequest
 	var destBaseUrl *url.URL
-	var err = json.NewDecoder(os.Stdin).Decode(&request)
+	var err= json.NewDecoder(os.Stdin).Decode(&request)
 	if err != nil {
 		log.Fatal("reading request", err)
 	}
@@ -79,7 +79,16 @@ func main() {
 		log.Fatal("uploading file", err)
 	}
 	// no-op check
-	json.NewEncoder(os.Stdout).Encode(model.OutResponse{Version: version, Filename: destFilename})
+	metavalue := []model.MetaDataPair{
+		model.MetaDataPair{
+			Name: "filename",
+			Value: destFilename,
+		},
+	}
+	json.NewEncoder(os.Stdout).Encode(model.OutResponse{
+		Version: model.Version{version},
+		MetaData: metavalue,
+	})
 }
 
 func getVersionFromFile(versionFilepath string, sourceDir string) string {

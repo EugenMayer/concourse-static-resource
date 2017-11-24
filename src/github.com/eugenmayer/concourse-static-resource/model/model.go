@@ -10,8 +10,17 @@ type OutRequest struct {
 }
 
 type OutResponse struct {
-	Version  string        `json:"version"`
-	Filename string `json:"filename"`
+	Version  Version         `json:"version"`
+	MetaData []MetaDataPair `json:"metadata"`
+}
+
+type Version struct {
+	Ref string `json:"ref"`
+}
+
+type MetaDataPair struct {
+	Name string `json:"name"`
+	Value string `json:"value"`
 }
 
 
@@ -34,8 +43,6 @@ type AuthPair struct {
 }
 
 type InResponse struct{}
-
-type CheckRequest struct{}
 
 type PseudoVersion struct {
 	Name      string `json:"name,omitempty"`
