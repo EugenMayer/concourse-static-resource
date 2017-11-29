@@ -1,6 +1,6 @@
 {
   "source": {
-    "uri": "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-<version>.tar.gz",
+    "uri": "https://archive.apache.org/dist/tomcat/tomcat-8/v<version>/bin/apache-tomcat-<version>.tar.gz",
     "version": "invalid",
     "extract": true
   },
@@ -8,6 +8,6 @@
      "version_filepath": "myversion/number"
   },
   "version": {
-    "ref": "5.1.44"
+    "ref": "8.5.23"
   }
 }

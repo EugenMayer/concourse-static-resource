@@ -4,6 +4,15 @@ set -e
 
 echo "---------running in tests---------------"
 
+echo "-------------------  multiple tokens url with extract"
+/opt/resource/in /tmp/subfolder < /tests/assets/payload_in_multiple_tokens | jq .
+if [ -s /tmp/subfolder/apache-tomcat-8.5.23/bin/catalina.sh ]; then
+  echo "in test succeeded, file has a size"
+else
+  echo "in test fail, file has 0 size"
+  exit 1
+fi
+
 echo "-------------------  dynamic url with extract"
 /opt/resource/in /tmp/subfolder < /tests/assets/payload_in_dynamic_extract | jq .
 
