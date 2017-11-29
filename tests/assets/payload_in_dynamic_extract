@@ -4,9 +4,6 @@
     "version": "invalid",
     "extract": true
   },
-  "params": {
-     "version_filepath": "myversion/number"
-  },
   "version": {
     "ref": "5.1.44"
   }

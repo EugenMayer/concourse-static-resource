@@ -62,12 +62,11 @@ func main() {
 		"sh",
 	)
 
-	//curlPipe.Stdout = os.Stderr
 	curlPipe.Stderr = os.Stderr
 
 	err = curlPipe.Run()
 	if err != nil {
-		println(err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 
