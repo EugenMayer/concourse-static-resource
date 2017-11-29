@@ -1,0 +1,14 @@
+{
+  "source": {
+    "uri": "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-<version>.tar.gz",
+    "version": "invalid",
+    "extract": true
+
+  },
+  "params": {
+     "version_filepath": "myversion/number"
+  },
+  "version": {
+    "ref": "5.1.44"
+  }
+}

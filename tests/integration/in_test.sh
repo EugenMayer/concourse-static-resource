@@ -4,6 +4,16 @@ set -e
 
 echo "---------running in tests---------------"
 
+echo "-------------------  dynamic url with extract"
+/opt/resource/in /tmp/subfolder < /tests/assets/payload_in_dynamic_extract | jq .
+
+if [ -s /tmp/subfolder/mysql-connector-java-5.1.44/mysql-connector-java-5.1.44-bin.jar ]; then
+  echo "in test succeeded, file has a size"
+else
+  echo "in test fail, file has 0 size"
+  exit 1
+fi
+
 echo "-------------------  static url"
 /opt/resource/in /tmp/subfolder < /tests/assets/payload_in_static_uri | jq .
 
