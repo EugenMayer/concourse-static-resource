@@ -67,6 +67,7 @@ func main() {
 	err = curlPipe.Run()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
+		fmt.Fprintln(os.Stderr, "Url: "+ URI.String())
 		os.Exit(1)
 	}
 
