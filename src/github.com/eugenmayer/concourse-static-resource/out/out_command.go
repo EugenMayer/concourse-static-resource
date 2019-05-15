@@ -62,9 +62,12 @@ func main() {
 	curlPipe.Stderr = os.Stderr
 
 	if err := curlPipe.Run(); err != nil {
-		log.Fatal("uploading file", err)
+		if request.Source.Debug {
+			fmt.Fprintf(os.Stderr, command)
+		}
 		fmt.Fprintln(os.Stderr, err.Error())
 		fmt.Fprintln(os.Stderr, "Url: "+ URI.String())
+		log.Fatal("uploading file", err)
 	}
 
 	metavalue := []model.MetaDataPair{
