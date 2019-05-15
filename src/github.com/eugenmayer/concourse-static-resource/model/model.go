@@ -5,9 +5,10 @@ type CheckRequest struct {
 }
 
 type InRequest struct {
-	Source  Source   `json:"source"`
-	Version Version  `json:"version"`
-	Params  InParams `json:"params"`
+	Source  Source  `json:"source"`
+	Version Version `json:"version"`
+	Params InParams `json:"params"`
+
 }
 
 type InResponse struct {
@@ -16,9 +17,9 @@ type InResponse struct {
 }
 
 type OutRequest struct {
-	Source  Source    `json:"source"`
-	Params  OutParams `json:"params"`
-	Version Version   `json:"version"`
+	Source Source    `json:"source"`
+	Params OutParams `json:"params"`
+	Version Version `json:"version"`
 }
 
 type OutResponse struct {
@@ -26,13 +27,15 @@ type OutResponse struct {
 	MetaData []MetaDataPair `json:"metadata"`
 }
 
+
 type OutParams struct {
 	SourceFilepathGlob string `json:"source_filepath"`
-	VersionFilepath    string `json:"version_filepath"`
+	VersionFilepath  string   `json:"version_filepath"`
 }
 
+
 type InParams struct {
-	VersionFilepath string `json:"version_filepath"`
+	VersionFilepath  string   `json:"version_filepath"`
 }
 
 type Version struct {
@@ -44,8 +47,8 @@ type MetaDataPair struct {
 	Value string `json:"value"`
 }
 
+
 type Source struct {
-	Debug            bool     `json:"debug"`
 	URI              string   `json:"uri"`
 	VersionStatic    string   `json:"version_static"`
 	Authentication   AuthPair `json:"authentication"`

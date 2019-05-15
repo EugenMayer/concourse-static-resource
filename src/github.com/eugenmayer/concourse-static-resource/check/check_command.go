@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
-	"log"
 	"os"
 
 	"github.com/eugenmayer/concourse-static-resource/model"
+	"github.com/eugenmayer/concourse-static-resource/log"
+	"errors"
 )
 
 func main() {
@@ -19,5 +19,5 @@ func main() {
 		log.Fatal("Accessing version_static from source", errors.New("please provide a source.version_static value for the version"))
 	}
 
-	json.NewEncoder(os.Stdout).Encode([]model.Version{model.Version{Ref: request.Source.VersionStatic}})
+	json.NewEncoder(os.Stdout).Encode( []model.Version{ model.Version{ Ref: request.Source.VersionStatic}} )
 }

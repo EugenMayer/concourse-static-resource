@@ -1,11 +1,11 @@
 package shared
 
 import (
+	"path/filepath"
+	"os"
 	"bufio"
 	"errors"
-	"log"
-	"os"
-	"path/filepath"
+	"github.com/eugenmayer/concourse-static-resource/log"
 	"strings"
 )
 
@@ -27,7 +27,7 @@ func InjectVersionIntoPath(path string, version string, pattern string) string {
 
 func GetVersionFromFile(versionFilepath string, sourceDir string) string {
 	if versionFilepath != "" {
-		var realpath = filepath.Join(sourceDir, versionFilepath)
+		var realpath string = filepath.Join(sourceDir, versionFilepath)
 		file, err := os.Open(realpath)
 		if err != nil {
 			log.Fatal("could not find version file at:"+realpath, err)
@@ -49,7 +49,7 @@ func GetVersionFromFile(versionFilepath string, sourceDir string) string {
 }
 
 func GetSourceFile(sourceFileGlob string, sourceDir string) string {
-	var realpath = filepath.Join(sourceDir, sourceFileGlob)
+	var realpath string = filepath.Join(sourceDir, sourceFileGlob)
 	matches, err := filepath.Glob(realpath)
 
 	if err != nil {
