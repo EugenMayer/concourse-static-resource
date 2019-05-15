@@ -49,6 +49,7 @@ type MetaDataPair struct {
 
 
 type Source struct {
+	Debug            bool     `json:"debug"`
 	URI              string   `json:"uri"`
 	VersionStatic    string   `json:"version_static"`
 	Authentication   AuthPair `json:"authentication"`

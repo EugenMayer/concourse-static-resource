@@ -118,6 +118,7 @@ You can do the same with `get: from_scm` then do a intermidiate `task: build-gem
 * `authentication`: *Optional.* Your basic-auth data `authentication.user` and `authentication.password`
 * `extract`: *Optional.* if `true`, `gunzip| tar xf` will be used to extract the download
 * `skip_ssl_validation`: *Optional.* Skip SSL validation.
+* `debug`: *Optional.* if `true`, the full `curl` command will be logged for troubleshooting purposes *Take care: this will expose credentials when `authentication` config is present*.
 
 ```yaml
 resources:

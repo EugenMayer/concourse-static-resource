@@ -1,6 +1,7 @@
 {
   "source": {
-    "uri": "https://48pfvax78yjr.runscope.net/foo.tgz"
+    "uri": "https://48pfvax78yjr.runscope.net/foo.tgz",
+    "debug": true
   },
    "params": {
       "source_filepath": "testfile"
