@@ -35,8 +35,8 @@ func main() {
 	// though when having a out to in handover, it would be the version out had, maybe something else VersionFromFile
 	var version string = request.Version.Ref
 
-	var SourceURL string = shared.InjectVersionIntoPath(request.Source.URI, version, "<version>")
-	URI, err := url.Parse(SourceURL)
+	var sourceURL string = shared.InjectVersionIntoPath(request.Source.URI, version, "<version>")
+	URI, err := url.Parse(sourceURL)
 	if err != nil {
 		log.Fatal("parsing uri", err)
 	}
