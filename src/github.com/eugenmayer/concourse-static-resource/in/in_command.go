@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
 	"os/exec"
-
-	"github.com/eugenmayer/concourse-static-resource/log"
-	"github.com/eugenmayer/concourse-static-resource/model"
 	"path/filepath"
+
+	"github.com/eugenmayer/concourse-static-resource/model"
 	"github.com/eugenmayer/concourse-static-resource/shared"
 )
 
@@ -35,8 +35,8 @@ func main() {
 	// though when having a out to in handover, it would be the version out had, maybe something else VersionFromFile
 	var version string = request.Version.Ref
 
-	var sourceUrl string = shared.InjectVersionIntoPath(request.Source.URI, version, "<version>")
-	URI, err := url.Parse(sourceUrl)
+	var sourceURL string = shared.InjectVersionIntoPath(request.Source.URI, version, "<version>")
+	URI, err := url.Parse(sourceURL)
 	if err != nil {
 		log.Fatal("parsing uri", err)
 	}
@@ -47,12 +47,12 @@ func main() {
 	curlOpts = curlOpts
 
 	var command string
-	if (request.Source.Extract == true) {
+	if request.Source.Extract == true {
 		// $2 is the placeholder for the curlPipe destination arg
 		command = fmt.Sprintf("curl %s '%s' | tar --warning=no-unknown-keyword -C '%s' -zxf -", curlOpts, URI.String(), destination)
 	} else {
 		// $2 is the placeholder for the curlPipe destination arg
-		command = fmt.Sprintf("cd '%s'; curl %s '%s' -O",destination, curlOpts, URI.String())
+		command = fmt.Sprintf("cd '%s'; curl %s '%s' -O", destination, curlOpts, URI.String())
 	}
 
 	curlPipe := exec.Command(
@@ -67,7 +67,7 @@ func main() {
 	err = curlPipe.Run()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		fmt.Fprintln(os.Stderr, "Url: "+ URI.String())
+		fmt.Fprintln(os.Stderr, "Url: "+URI.String())
 		os.Exit(1)
 	}
 
@@ -79,7 +79,7 @@ func main() {
 		},
 	}
 	json.NewEncoder(os.Stdout).Encode(model.InResponse{
-		Version: model.Version{version},
+		Version:  model.Version{version},
 		MetaData: metavalue,
 	})
 }
